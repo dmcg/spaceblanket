@@ -1,9 +1,12 @@
 package com.oneeyedmen.spaceblanket
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.*
+import kotlin.reflect.full.IllegalCallableAccessException
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 
@@ -69,8 +72,14 @@ class SpaceBlanketTests {
         assertEquals(Thing(42, "banana").asPropertyMap(), thingAsMap)
     }
 
-    @Test fun respects_privacy() {
-        assertEquals(emptyMap(), PrivateThing().asPropertyMap())
+    @Test fun respects_privacy_for_listing() {
+        assertEquals(emptyMap(), PrivateThing("secret").asPropertyMap())
+    }
+
+    @Test fun throws_for_private_lookup() {
+        assertThrows<IllegalCallableAccessException> {
+            PrivateThing("secret").asPropertyMap()["aString"]
+        }
     }
 
     open class SuperThing {
@@ -80,6 +89,6 @@ class SpaceBlanketTests {
     class Thing(val anInt: Int, var aString: String) : SuperThing()
 
     @Suppress("unused")
-    class PrivateThing(private val aString: String = "secret")
+    class PrivateThing(private val aString: String)
 }
 
