@@ -18,13 +18,13 @@ internal class SpaceBlanket(private val thing: Any) : Map<String, Any?> {
     override val size: Int get() = keys.size
 
     override val values: Collection<Any?>
-        get() = keys.map { this.get(it) }
+        get() = keys.map { this[it] }
 
     override fun containsKey(key: String) = keys.contains(key)
 
     override fun containsValue(value: Any?) = values.contains(value)
 
-    override fun get(key: String): Any? = properties.filter { it.name == key }.firstOrNull()?.get(thing)
+    override fun get(key: String): Any? = properties.firstOrNull { it.name == key }?.get(thing)
 
     override fun isEmpty() = size == 0
 
